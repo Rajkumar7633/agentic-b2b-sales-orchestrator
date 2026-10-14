@@ -17,12 +17,15 @@ import {
   Award,
   Sparkles,
   Zap,
-  Activity
+  Activity,
+  Layers,
 } from "lucide-react";
 
 const navItems = [
   { name: "Executive Dashboard", href: "/", icon: LayoutDashboard },
   { name: "Pursuit Pipeline", href: "/pipeline", icon: Kanban },
+  { name: "Real-Time Stream", href: "/stream", icon: Activity, badge: "SSE Live" },
+  { name: "Cadence Workflows", href: "/workflows", icon: Layers, badge: "Durable" },
   { name: "Approval Center", href: "/approvals", icon: CheckCircle2, badge: "HITL Gate" },
   { name: "Accounts & Intelligence", href: "/accounts", icon: Building2 },
   { name: "Executive Contacts", href: "/contacts", icon: Users },

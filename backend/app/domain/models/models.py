@@ -365,3 +365,24 @@ class WorkbookImport(Base):
     errors: Mapped[list[str] | None] = mapped_column(JSON, default=list)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
 
+
+class CadenceWorkflow(Base):
+    __tablename__ = "cadence_workflows"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True, default=generate_uuid)
+    tenant_id: Mapped[str] = mapped_column(String(64), ForeignKey("tenants.id"), index=True, nullable=False)
+    company_id: Mapped[str] = mapped_column(String(64), ForeignKey("companies.id"), index=True, nullable=False)
+    contact_id: Mapped[str | None] = mapped_column(String(64), ForeignKey("contacts.id"), nullable=True)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    status: Mapped[str] = mapped_column(String(32), default="ACTIVE")  # ACTIVE, PAUSED, COMPLETED, WAITING_APPROVAL, FAILED
+    current_step_index: Mapped[int] = mapped_column(Integer, default=0)
+    total_steps: Mapped[int] = mapped_column(Integer, default=4)
+    steps_config: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)
+    execution_history: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)
+    next_run_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_run_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    retry_count: Mapped[int] = mapped_column(Integer, default=0)
+    max_retries: Mapped[int] = mapped_column(Integer, default=3)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, onupdate=utc_now)
+

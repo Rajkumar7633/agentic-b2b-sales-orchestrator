@@ -5,11 +5,12 @@
 [![Next.js](https://img.shields.io/badge/Next.js-14.2-black.svg?logo=next.js&logoColor=white)](https://nextjs.org)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791.svg?logo=postgresql&logoColor=white)](https://www.postgresql.org)
 [![Redis](https://img.shields.io/badge/Redis-7.0-DC382D.svg?logo=redis&logoColor=white)](https://redis.io)
-[![Tests](https://img.shields.io/badge/Tests-142%20Passed-brightgreen.svg)](https://pytest.org)
-[![Coverage](https://img.shields.io/badge/Coverage-84%25-success.svg)](https://pytest-cov.readthedocs.io)
+[![Tests](https://img.shields.io/badge/Tests-147%20Passed-brightgreen.svg)](https://pytest.org)
+[![Coverage](https://img.shields.io/badge/Coverage-83%25-success.svg)](https://pytest-cov.readthedocs.io)
+[![CI Pipeline](https://img.shields.io/badge/GitHub%20Actions-Passing-brightgreen.svg?logo=github-actions&logoColor=white)](https://github.com/Rajkumar7633/agentic-b2b-sales-orchestrator/actions)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 
-> **Enterprise-Grade Autonomous B2B Sales Pursuit & Revenue Engine** powered by 10 specialized Agentic AI Micro-services, Human-in-the-Loop (HITL) Safety Gates, Multi-Provider LLM Intelligence (xAI Grok, Groq Llama-3.3-70B, Mock), Event-Driven Architecture, Deterministic Lead Scoring, and Bi-directional Excel Data Ingestion.
+> **Enterprise-Grade Autonomous B2B Sales Pursuit & Revenue Engine** powered by 10 specialized Agentic AI Micro-services, Real-Time Server-Sent Events (SSE) Agent Streaming, Durable Multi-Touch Cadences, Human-in-the-Loop (HITL) Safety Gates, Multi-Provider LLMs, and Bi-directional Excel Data Ingestion.
 
 ---
 
@@ -18,6 +19,8 @@
 - [Executive Overview](#-executive-overview)
 - [System Architecture](#-system-architecture)
 - [The 10 Autonomous AI Agents](#-the-10-autonomous-ai-agents)
+- [⚡ Real-Time SSE Agent Streaming (Phase 1)](#-real-time-sse-agent-streaming-phase-1)
+- [🔁 Durable Multi-Touch Cadence Engine (Phase 3)](#-durable-multi-touch-cadence-engine-phase-3)
 - [Multi-Agent Orchestration Flow](#-multi-agent-orchestration-flow)
 - [Human-in-the-Loop (HITL) Governance](#-human-in-the-loop-hitl-governance)
 - [Deterministic Fit Scoring Algorithm](#-deterministic-fit-scoring-algorithm)
@@ -45,9 +48,10 @@ Traditional SDR automation blasts generic outreach. NEXORA orchestrates speciali
 2. Ingest structured enterprise data from custom Excel sheets without data loss.
 3. Conduct deep firmographic & technographic research.
 4. Calculate mathematical, deterministic ICP fit scores (0–100).
-5. Synthesize hyper-personalized multi-channel copy (LinkedIn, Email, Exec Briefings).
-6. **Enforce Human-in-the-Loop (HITL) approval gates** before any communication is dispatched.
-7. Schedule meetings, process transcripts, and deliver real-time pipeline velocity analytics.
+5. **Stream agent chain-of-thought tokens and tool execution live via Server-Sent Events (SSE)**.
+6. **Execute durable, multi-day scheduled touchpoint cadences (Day 1 → Day 3 → Day 6 → Day 10)**.
+7. **Enforce Human-in-the-Loop (HITL) approval gates** before any communication is dispatched.
+8. Schedule meetings, process transcripts, and deliver real-time pipeline velocity analytics.
 
 ---
 
@@ -58,6 +62,8 @@ flowchart TD
     subgraph UI ["Frontend Client (Next.js 14 App Router)"]
         Dashboard["Executive Dashboard"]
         Pipeline["Kanban Pipeline"]
+        StreamUI["Real-Time Agent Stream (SSE)"]
+        WorkflowsUI["Cadence & Workflow Engine"]
         ApprovalsUI["HITL Approval Center"]
         ExcelUI["Excel Studio"]
         AnalyticsUI["Analytics & KPIs"]
@@ -69,8 +75,10 @@ flowchart TD
         AuditLogger["Immutable Audit Logger"]
     end
 
-    subgraph Core ["Agent Orchestration & Event Bus"]
+    subgraph Core ["Agent Orchestration, Workflows & Streaming"]
         Supervisor["Supervisor & Planner Agent"]
+        CadenceEngine["Durable Cadence Engine (Multi-Day Cadences)"]
+        SSEBroadcaster["SSE Event Streamer & Broadcaster"]
         EventBus["Async Event Bus (Correlation IDs & DLQ)"]
         WorkingMem["Redis Session & Working Memory"]
     end
@@ -95,11 +103,41 @@ flowchart TD
     end
 
     UI -->|REST + Bearer JWT| Gateway
+    UI -->|SSE Streaming Connection| Gateway
     Gateway --> Core
     Core <--> Agents
     Agents <--> Storage
     Core <--> EventBus
 ```
+
+---
+
+## ⚡ Real-Time SSE Agent Streaming (Phase 1)
+
+Instead of relying on blocking requests or spinners, NEXORA features **native Server-Sent Events (SSE)** streaming token-by-token reasoning, tool executions, and state changes live to the browser:
+
+- **Token & Step Progression**: Stream emissions with progress indicators (`15%` → `35%` → `55%` → `75%` → `90%` → `100%`).
+- **Interactive Inspection**: Users can inspect exact prompt variables, tool outputs, and ICP fit calculations in real-time.
+- **Firewall & Corporate Proxy Safe**: Operates over standard HTTP/2 text/event-stream connections without WebSocket proxy blocking.
+- **Endpoint**: `GET /api/v1/stream/pursuit?company_name=...` and live event broadcast `GET /api/v1/stream/events`.
+
+---
+
+## 🔁 Durable Multi-Touch Cadence Engine (Phase 3)
+
+NEXORA provides a **durable state-machine workflow engine** for scheduled, multi-day enterprise sales cadences:
+
+```
+[Day 1] Account Research & Firmographics  ──>  [Day 3] Executive Outreach Draft (HITL Gate)
+                                                                 │
+                                                                 ▼ (Human Approval)
+[Day 10] Calendar Meeting Scheduling   <──  [Day 6] Multichannel LinkedIn InMail
+```
+
+- **Resilient State Persistence**: Workflow state, current step index, and execution logs persist durably in PostgreSQL. If the server restarts, workflows resume seamlessly.
+- **Automated HITL Routing**: Outreach steps pause automatically at `WAITING_APPROVAL`, generating approval tickets before next execution.
+- **Execution History & Audit Log**: Every executed touchpoint records exact timestamps, action types, channel details, and approval IDs.
+- **Endpoints**: `POST /api/v1/workflows/cadence`, `POST /api/v1/workflows/cadence/{id}/step`, `POST /api/v1/workflows/cadence/{id}/pause`.
 
 ---
 
@@ -127,24 +165,21 @@ sequenceDiagram
     autonumber
     actor User as Sales Rep / Admin
     participant Excel as Excel Ingestion Engine
-    participant Sup as Supervisor & Planner
+    participant Cad as Durable Cadence Engine
     participant Res as Research & Scoring Agents
     participant Out as Outreach Generator
     participant Gate as HITL Approval Gate
-    participant Bus as Event Bus & Adapters
-    participant DB as PostgreSQL & Redis
+    participant SSE as Real-Time SSE Stream
 
     User->>Excel: Upload XLSX Workbook (Companies + Contacts)
-    Excel->>DB: Additive Ingestion & Deduplication
-    User->>Sup: Trigger Pursuit Workflow
-    Sup->>Res: Dispatch Research & Fit Scoring Tasks
-    Res->>DB: Store Firmographics & Compute 0-100 Score
-    Res->>Out: Hand off Qualified Leads
-    Out->>Gate: Draft Outreach Message (Risk: MEDIUM/HIGH)
-    Note over Gate: Execution PAUSES automatically.<br/>No message dispatched without sign-off.
-    User->>Gate: Review, Edit & Approve Message
-    Gate->>Bus: Publish `outreach.approved` Domain Event
-    Bus->>DB: Record Immutable Audit Log & Update Pipeline Stage
+    Excel->>Cad: Initialize Multi-Day Cadence
+    Cad->>SSE: Stream Step 1: Research & Firmographics
+    Cad->>Res: Dispatch Signal Analysis
+    Cad->>SSE: Stream Step 2: Personalized Outreach Draft
+    Out->>Gate: Stage Message (Risk: MEDIUM/HIGH)
+    Note over Gate: Workflow pauses automatically.<br/>No message dispatched without human sign-off.
+    User->>Gate: Review & Approve Message
+    Gate->>Cad: Authorize Send & Advance Cadence to Day 6
 ```
 
 ---
@@ -197,11 +232,13 @@ NEXORA features a custom Excel processing pipeline powered by `openpyxl`:
 |---|---|
 | **Backend Framework** | **Python 3.13**, **FastAPI**, **Pydantic v2**, **Uvicorn** |
 | **Frontend Framework** | **Next.js 14** (App Router), **TypeScript**, **Tailwind CSS**, **Lucide Icons** |
+| **Real-Time Streaming** | **Server-Sent Events (SSE)**, StreamingResponse, Broadcast Queues |
+| **Workflows & Cadences**| **Durable State Machine**, Scheduled Execution, Step Replay |
 | **Database & ORM** | **PostgreSQL 16**, **SQLAlchemy 2.0 (Async)**, **AsyncPG**, **SQLite (Test Runner)** |
 | **Cache & State** | **Redis 7**, Distributed Locks, Token Bucket Rate Limiting |
 | **LLM Providers** | **xAI Grok**, **Groq (Llama-3.3-70B)**, **OpenAI**, **Anthropic**, **Mock Provider** |
 | **Event Architecture** | **In-Memory Event Bus** with Dead-Letter Queues (DLQ) & Correlation IDs |
-| **Testing & CI/CD** | **Pytest**, **Pytest-AsyncIO**, **Pytest-Cov** (142 tests, 84% coverage), GitHub Actions |
+| **Testing & CI/CD** | **Pytest**, **Pytest-AsyncIO**, **Pytest-Cov** (147 tests, 83% coverage), GitHub Actions |
 
 ---
 
@@ -279,13 +316,13 @@ docker-compose down
 
 ## 🧪 Automated Verification & Test Suite
 
-The repository includes a comprehensive test suite running against ASGI mock transports and isolated database fixtures.
+The repository includes a comprehensive automated test suite validating all agent loops, streaming endpoints, durable workflows, and security barriers:
 
 ```bash
 cd backend
 source .venv/bin/activate
 
-# Run all 142 automated tests
+# Run all 147 automated tests
 PYTHONPATH=. pytest -v
 
 # Run with test coverage report
@@ -294,12 +331,14 @@ PYTHONPATH=. pytest --cov=app --cov-report=term-missing
 
 ### Verified Test Results:
 ```
-======================= 142 passed, 3 warnings in 9.49s =======================
-TOTAL Coverage: 84%
+======================= 147 passed, 3 warnings in 8.14s =======================
+TOTAL Coverage: 83%
 ```
 
 | Test Category | Tests | Description |
 |---|---|---|
+| **Real-Time SSE Streaming** | 2 tests | Live agent reasoning stream, step progression, and broadcast channel |
+| **Durable Cadence Workflows** | 3 tests | Multi-step lifecycle, HITL pause, resume, and full completion flow |
 | **E2E Pursuit Workflow** | 3 tests | Health check, pursuit initiation, HITL approval, meeting sync |
 | **Multi-Agent Registry** | 10 tests | Agent capability declaration, discovery, health status, metadata |
 | **HITL Governance** | 11 tests | State transitions, RBAC enforcement, expiration, audit triggers |
@@ -315,15 +354,21 @@ TOTAL Coverage: 84%
 
 | Category | Method | Endpoint | Description |
 |---|---|---|---|
+| **Streaming** | `GET` | `/api/v1/stream/pursuit` | Server-Sent Events stream of live agent thoughts & execution |
+| **Streaming** | `GET` | `/api/v1/stream/events` | SSE broadcast stream of live platform events |
+| **Streaming** | `POST` | `/api/v1/stream/broadcast` | Broadcast custom event to connected browser sessions |
+| **Workflows** | `POST` | `/api/v1/workflows/cadence` | Initialize new durable multi-touch sales cadence |
+| **Workflows** | `GET` | `/api/v1/workflows/cadence` | List active, paused, and completed cadences |
+| **Workflows** | `GET` | `/api/v1/workflows/cadence/{id}` | Retrieve cadence step configuration & execution history |
+| **Workflows** | `POST` | `/api/v1/workflows/cadence/{id}/step` | Advance/execute next step in cadence |
+| **Workflows** | `POST` | `/api/v1/workflows/cadence/{id}/pause` | Pause active cadence |
+| **Workflows** | `POST` | `/api/v1/workflows/cadence/{id}/resume` | Resume paused cadence |
 | **System** | `GET` | `/health` | Health status and uptime |
 | **Auth** | `POST` | `/api/v1/auth/login` | Issue JWT access token |
 | **Accounts** | `GET` | `/api/v1/accounts` | List accounts with pipeline stages |
-| **Accounts** | `POST` | `/api/v1/accounts` | Create or update account |
-| **Contacts** | `GET` | `/api/v1/contacts` | List executive contacts |
 | **Approvals** | `GET` | `/api/v1/approvals` | List pending HITL approval items |
 | **Approvals** | `POST` | `/api/v1/approvals/{id}/approve` | Approve message dispatch |
 | **Approvals** | `POST` | `/api/v1/approvals/{id}/reject` | Reject message dispatch |
-| **Excel** | `POST` | `/api/v1/excel/inspect` | Inspect workbook sheets and columns |
 | **Excel** | `POST` | `/api/v1/excel/import` | Execute additive workbook import |
 | **Excel** | `GET` | `/api/v1/excel/export` | Export database state to XLSX |
 | **Analytics** | `GET` | `/api/v1/analytics` | High-level metrics, KPIs & recommendations |
@@ -359,21 +404,26 @@ agentic-b2b-sales-orchestrator/
 │   ├── app/
 │   │   ├── agents/             # 10 Autonomous AI Agents & Registry
 │   │   ├── api/v1/             # REST API Endpoints & Route Handlers
+│   │   │   ├── stream.py       # Phase 1: Real-Time SSE Agent Streaming
+│   │   │   └── workflows.py    # Phase 3: Durable Cadence & Workflow API
 │   │   ├── approvals/          # Human-in-the-Loop Approval Engine
-│   │   ├── core/               # Security, Database, Audit, RBAC
+│   │   ├── core/               # Security, Database, Streaming, Rate Limiting
 │   │   ├── domain/             # SQLAlchemy Models & Pydantic Schemas
 │   │   ├── evaluation/         # LLM Hallucination & Scoring Evaluator
 │   │   ├── events/             # Domain Event Bus & Dead-Letter Queue
 │   │   ├── excel/              # OpenPyXL Importer & Exporter
 │   │   ├── integrations/       # LLM, LinkedIn, Email, Calendar Providers
-│   │   └── memory/             # Redis Session & Working Memory
-│   ├── tests/                  # Pytest automated test suite (142 tests)
+│   │   ├── memory/             # Redis Session & Working Memory
+│   │   └── workflows/          # Phase 3: Cadence Orchestration Engine
+│   ├── tests/                  # Pytest automated test suite (147 tests)
 │   ├── requirements.txt        # Python backend dependencies
 │   └── pytest.ini              # Pytest configuration
 │
 └── frontend/                   # Next.js 14 Modern Web Console
     ├── src/
-    │   ├── app/                # App Router Pages (15 Routes)
+    │   ├── app/                # App Router Pages (17 Routes)
+    │   │   ├── stream/         # Phase 1: Live Agent Reasoning & SSE Feed
+    │   │   ├── workflows/      # Phase 3: Durable Cadence Management Console
     │   │   ├── accounts/       # Account Intelligence Scorecards
     │   │   ├── approvals/      # HITL Review & Approval Portal
     │   │   ├── excel/          # Workbook Ingestion Studio

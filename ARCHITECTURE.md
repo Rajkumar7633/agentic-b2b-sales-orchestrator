@@ -144,3 +144,57 @@ Tier 3 (Low Fit):     Score < 50   --> Disqualified or Long-Term Tracking
   - `REVIEWER`: Review, edit, approve, or reject outbound messages.
   - `SALES_REP`: Account discovery, pursuit initiation, contact creation.
 - **Audit Immutability**: All actions generate an `AuditLog` row containing user ID, tenant ID, timestamp, IP, action, resource, and redacted payload parameters. Passwords and API secrets are automatically scrubbed before persistence.
+
+---
+
+## 8. Real-Time Streaming Architecture (Server-Sent Events)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client as Next.js 14 Client
+    participant Gateway as FastAPI Router (/stream)
+    participant Broadcaster as Async System Event Broadcaster
+    participant Agents as Multi-Agent Pool
+
+    Client->>Gateway: GET /api/v1/stream/pursuit?company_name=...
+    Gateway-->>Client: HTTP 200 (text/event-stream)
+    loop Sequential Multi-Agent Execution
+        Agents->>Gateway: Step Progress & Chain-of-Thought
+        Gateway-->>Client: data: {"step": 1, "phase": "DISCOVERY", "thought": "..."}\n\n
+    end
+    Agents->>Gateway: Staged at HITL Gate (100% Progress)
+    Gateway-->>Client: data: {"step": 6, "phase": "GOVERNANCE", "status": "PENDING_APPROVAL"}\n\n
+
+    Note over Client,Broadcaster: Live Event Broadcast Feed
+    Client->>Gateway: GET /api/v1/stream/events
+    Broadcaster-->>Client: data: {"event_type": "PIPELINE_STAGE_CHANGED", ...}\n\n
+```
+
+---
+
+## 9. Durable Cadence & Workflow Engine
+
+```mermaid
+stateDiagram-v2
+    [*] --> Day1_Research: Cadence Initialized (Day 1)
+    Day1_Research --> Day3_OutreachDraft: 360° Firmographics Ingested
+    
+    state Day3_OutreachDraft {
+        [*] --> SynthesizeCopy: Generate Email Pitch
+        SynthesizeCopy --> StageHITL: Route to Approval Queue
+    }
+
+    Day3_OutreachDraft --> WAITING_APPROVAL: Outreach Drafted
+    WAITING_APPROVAL --> Day6_LinkedInFollowup: Manager Signs Off
+    
+    state Day6_LinkedInFollowup {
+        [*] --> SynthesizeInMail: Generate LinkedIn Pitch
+        SynthesizeInMail --> StageInMailHITL: Route to Approval Queue
+    }
+
+    Day6_LinkedInFollowup --> Day10_MeetingSync: Follow-up Dispatched
+    Day10_MeetingSync --> COMPLETED: Calendar Slots Synchronized
+    COMPLETED --> [*]
+```
+

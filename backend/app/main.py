@@ -20,6 +20,8 @@ from app.api.v1 import (
     leads,
     meetings,
     outreach,
+    stream,
+    workflows,
 )
 from app.core.config import settings
 from app.core.rate_limit import rate_limit_middleware
@@ -162,6 +164,8 @@ app.include_router(agents.router, prefix=settings.API_V1_STR)
 app.include_router(eval.router, prefix=settings.API_V1_STR)
 app.include_router(audit.router, prefix=settings.API_V1_STR)
 app.include_router(knowledge.router, prefix=settings.API_V1_STR)
+app.include_router(stream.router, prefix=settings.API_V1_STR)
+app.include_router(workflows.router, prefix=settings.API_V1_STR)
 
 
 @app.get("/")
