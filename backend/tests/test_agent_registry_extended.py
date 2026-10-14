@@ -3,6 +3,7 @@ Agent Registry Extended Unit Tests
 Covers get(), list_agents(), and sync_to_db() (create, update, delete obsolete).
 """
 import pytest
+
 from app.agents.init_agents import initialize_agents
 from app.agents.registry import AgentRegistry, agent_registry
 from app.domain.models.models import AgentRegistryItem, Tenant

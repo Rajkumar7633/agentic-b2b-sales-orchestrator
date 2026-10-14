@@ -3,6 +3,7 @@ Knowledge API Extended Tests
 Covers search query < 2 error, list_documents endpoint.
 """
 import pytest
+
 from app.domain.models.models import KnowledgeDocument, Tenant
 
 

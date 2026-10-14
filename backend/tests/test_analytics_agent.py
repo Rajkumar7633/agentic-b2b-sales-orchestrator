@@ -6,9 +6,7 @@ Covers: KPI computation, industry normalisation, stage distribution,
 import pytest
 
 from app.agents.analytics import AnalyticsAgent
-from app.domain.models.models import (
-    Approval, Company, Contact, Meeting, OutreachMessage, Tenant
-)
+from app.domain.models.models import Approval, Company, Contact, Meeting, OutreachMessage, Tenant
 
 
 # ─────────────────────────────────────────────────────────────

@@ -4,6 +4,7 @@ Covers get_account (200 & 404), research_account (200 & 404),
 pursue_account (new company & existing company).
 """
 import pytest
+
 from app.domain.models.models import Company, Tenant
 
 

@@ -4,6 +4,7 @@ Covers /excel/inspect, /excel/import (success & error), /excel/export,
 and ExcelExporter.export_pipeline.
 """
 import io
+
 import pandas as pd
 import pytest
 

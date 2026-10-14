@@ -1,0 +1,17 @@
+line-length = 120
+target-version = "py313"
+
+[lint]
+select = ["E", "F", "W", "I"]
+ignore = [
+    "E501",   # line too long
+    "B008",   # FastAPI Depends
+    "BLE001", # blind exception catching
+    "S110",   # try-except-pass
+    "B017",   # blind assert in tests
+]
+
+[lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"backend/tests/*" = ["F401", "F841"]
+"tests/*" = ["F401", "F841"]

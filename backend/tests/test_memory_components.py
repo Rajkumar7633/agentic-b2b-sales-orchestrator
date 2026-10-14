@@ -4,6 +4,7 @@ Covers SessionMemory and WorkingMemory local fallback operations,
 retrieval, appending, and clearing.
 """
 import pytest
+
 from app.memory.session import session_memory
 from app.memory.working import working_memory
 
@@ -11,7 +12,7 @@ from app.memory.working import working_memory
 @pytest.mark.asyncio
 async def test_session_memory_operations():
     session_id = "test_sess_100"
-    
+
     # 1. Initially empty
     history = await session_memory.get_session_history(session_id)
     assert history == []

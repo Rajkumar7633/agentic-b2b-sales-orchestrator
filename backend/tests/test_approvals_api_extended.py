@@ -4,6 +4,7 @@ Covers patch-stale-bodies endpoint, value error handling on approve/reject,
 and stale approval expiration.
 """
 import pytest
+
 from app.domain.models.models import Approval, Tenant
 
 

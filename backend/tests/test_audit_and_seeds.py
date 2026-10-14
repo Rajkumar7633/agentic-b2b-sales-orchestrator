@@ -20,7 +20,7 @@ async def test_audit_logs_api_sample_seeding(client, db_session, auth_headers):
     assert res.status_code == 200
     logs = res.json()
     assert len(logs) >= 5
-    actions = [l["action"] for l in logs]
+    actions = [entry["action"] for entry in logs]
     assert "USER_LOGIN_SUCCESS" in actions
     assert "PURSUIT_TRIGGERED" in actions
 

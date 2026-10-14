@@ -4,6 +4,7 @@ Covers Auth API (success & failed login), Leads API (list & 404/detail),
 Outreach API (list & draft).
 """
 import pytest
+
 from app.core.security import hash_password
 from app.domain.models.models import Company, Lead, OutreachMessage, Tenant, User
 

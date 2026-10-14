@@ -11,8 +11,6 @@ from app.domain.models.models import (
     CompanyProject,
     Contact,
     Lead,
-    Meeting,
-    OutreachMessage,
     WorkbookImport,
 )
 
@@ -73,7 +71,7 @@ class ExcelImporter:
         for sheet in sheet_names:
             df = read_sheet_with_header(excel_file, sheet)
             real_cols = [str(c) for c in df.columns if not str(c).startswith('Unnamed')]
-            
+
             # Clean sample rows to replace any remaining NaN/Inf values with None for JSON compliance
             sample_records = df.head(3).to_dict(orient="records")
             clean_samples = []

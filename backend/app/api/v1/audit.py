@@ -66,8 +66,8 @@ async def list_audit_logs(
                 details={"rule": "ZERO_AUTONOMOUS_DISPATCH", "mode": "STRICT_HITL"},
             ),
         ]
-        for l in sample_logs:
-            db.add(l)
+        for log_entry in sample_logs:
+            db.add(log_entry)
         await db.commit()
 
         result = await db.execute(

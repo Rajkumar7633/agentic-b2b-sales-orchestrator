@@ -9,7 +9,6 @@ from app.core.database import get_db
 from app.core.security import UserContext, get_current_user
 from app.domain.models.models import Company, Lead, Meeting
 
-
 router = APIRouter(prefix="/meetings", tags=["Meetings & Intelligence"])
 
 

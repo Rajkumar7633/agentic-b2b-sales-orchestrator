@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from sqlalchemy import select
@@ -123,9 +123,9 @@ class HITLApprovalEngine:
                     lead_id=lead_row.id,
                     title=f"NEXORA Strategic Discovery — {company_name}",
                     description=(
-                        f"Initial discovery call following approved LinkedIn outreach. "
-                        f"Agenda: understanding infrastructure priorities, sharing NEXORA ROI case studies, "
-                        f"and aligning on a mutual next-step action plan."
+                        "Initial discovery call following approved LinkedIn outreach. "
+                        "Agenda: understanding infrastructure priorities, sharing NEXORA ROI case studies, "
+                        "and aligning on a mutual next-step action plan."
                     ),
                     proposed_slots=proposed_slots,
                     status="PROPOSED",

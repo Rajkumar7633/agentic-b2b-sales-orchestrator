@@ -7,7 +7,6 @@ import pytest
 
 from app.agents.init_agents import initialize_agents
 
-
 EXPECTED_AGENTS = [
     "Company Research Agent",
     "Lead Scoring Agent",

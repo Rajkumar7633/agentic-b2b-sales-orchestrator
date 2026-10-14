@@ -10,7 +10,6 @@ import pytest
 from app.agents.analytics import AnalyticsAgent
 from app.domain.models.models import Approval, Company, Contact, Meeting, OutreachMessage, Tenant
 
-
 REQUIRED_KEYS = [
     "total_target_accounts", "qualified_leads", "high_value_leads",
     "outreach_sent", "approvals_pending", "followups_due",

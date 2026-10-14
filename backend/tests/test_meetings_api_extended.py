@@ -4,6 +4,7 @@ Covers list_meetings, create_human_meeting (all fallback branches),
 analyze_meeting_transcript (error & success), propose_meeting_slots.
 """
 import pytest
+
 from app.domain.models.models import Company, Lead, Meeting, Tenant
 
 

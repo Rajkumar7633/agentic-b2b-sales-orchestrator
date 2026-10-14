@@ -34,13 +34,12 @@ class AgentRegistry:
     async def sync_to_db(self, db: AsyncSession) -> None:
         """Syncs all registered in-memory agent statuses and metrics to the DB AgentRegistryItem table."""
         active_ids = set(self._agents.keys())
-        
+
         # Remove obsolete agents not in active list
         from sqlalchemy import delete
         await db.execute(delete(AgentRegistryItem).where(AgentRegistryItem.id.not_in(active_ids)))
 
         for agent in self._agents.values():
-            info = agent.get_info()
             result = await db.execute(select(AgentRegistryItem).where(AgentRegistryItem.id == agent.agent_id))
             item = result.scalars().first()
             if not item:
