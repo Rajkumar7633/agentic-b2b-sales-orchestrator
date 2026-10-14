@@ -221,12 +221,12 @@ async def test_crm_pipeline_supports_all_stages():
 
 
 # ─────────────────────────────────────────────────────────────
-# Analytics Agent (lightweight smoke — no DB needed)
+# Analytics Agent (lightweight smoke)
 # ─────────────────────────────────────────────────────────────
 @pytest.mark.asyncio
-async def test_analytics_agent_returns_complete_kpis():
+async def test_analytics_agent_returns_complete_kpis(db_session):
     agent = AnalyticsAgent()
-    result = await agent.execute({"tenant_id": "tenant_nexora_default"})
+    result = await agent.execute({"tenant_id": "tenant_nexora_default", "_db_session": db_session})
     required_keys = [
         "total_target_accounts", "qualified_leads", "high_value_leads",
         "outreach_sent", "approvals_pending", "followups_due",
